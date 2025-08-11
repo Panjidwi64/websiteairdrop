@@ -1,4 +1,4 @@
-<!-- HTML Retro Airdrop List -->
+<!-- HTML Retro Airdrop List with Image Cards -->
 <!doctype html>
 <html lang="id">
 <head>
@@ -16,8 +16,8 @@
       --glass: rgba(255,255,255,0.03);
     }
     body{margin:0;font-family:Roboto;background: radial-gradient(circle at 10% 10%, #122237, var(--bg));color:#e6eef8}
-    .wrap{max-width:980px;margin:20px auto;padding:20px}
-    header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+    .wrap{max-width:1100px;margin:20px auto;padding:20px}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
     .logo{font-family:'Press Start 2P',monospace;color:var(--accent);font-size:18px}
     .sub{color:var(--muted);font-size:13px}
     .controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
@@ -26,15 +26,57 @@
     .btn.active{box-shadow:0 4px 18px rgba(0,0,0,0.6)}
     .search{flex:1;min-width:160px}
     .search input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
-    .card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);padding:14px;border-radius:12px}
-    .card h3{margin:0 0 6px;font-size:14px;color:#fff}
-    .meta{font-size:12px;color:var(--muted);margin-bottom:8px}
-    .instructions{font-size:13px;color:#dbeafe}
-    .tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:14px}
+    .card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.04);
+      border-radius:12px;
+      padding:10px;
+      text-align:center;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 6px 16px rgba(0,0,0,0.4);
+    }
+    .card img{
+      width:80px;
+      height:80px;
+      object-fit:contain;
+      margin-bottom:8px;
+    }
+    .card-title{
+      font-size:13px;
+      font-weight:bold;
+      color:#fff;
+      margin-bottom:6px;
+    }
+    .meta{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .tag{display:inline-block;padding:2px 6px;border-radius:999px;font-size:10px;font-weight:700}
     .tag.free{background:rgba(51,214,159,0.12);color:#33d69f}
     .tag.retro{background:rgba(255,204,51,0.08);color:var(--accent)}
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .instructions{
+      font-size:11px;
+      color:#dbeafe;
+      min-height:32px;
+      margin-bottom:6px;
+    }
+    .card a{
+      display:inline-block;
+      font-size:11px;
+      background-color:var(--accent);
+      color:#000;
+      padding:4px 8px;
+      border-radius:6px;
+      text-decoration:none;
+      transition:background-color 0.2s ease;
+    }
+    .card a:hover{background-color:#e6b800}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
   </style>
 </head>
 <body>
@@ -55,7 +97,7 @@
     <div id="count" class="sub">Memuat data...</div>
     <div id="grid" class="grid"></div>
 
-    <footer>Update daftar langsung dari Google Sheets.</footer>
+    <footer>Update daftar langsung dari Google Sheets. Tambahkan kolom 'logo' untuk gambar.</footer>
   </div>
 
   <script>
@@ -90,10 +132,12 @@
       list.forEach(it=>{
         const card = document.createElement('div');
         card.className='card';
-        card.innerHTML=`<h3>${it.title}</h3>
+        card.innerHTML=`
+          ${it.logo?`<img src="${it.logo}" alt="${it.title}">`:`<img src="https://via.placeholder.com/80?text=?" alt="No Logo">`}
+          <div class="card-title">[${it.title}]</div>
           <div class="meta"><span class="tag ${it.category==='free'?'free':'retro'}">${it.category}</span> • ${it.date||''}</div>
-          <div class="instructions">${it.instructions}</div>
-          ${it.link?`<a class="btn ghost" href="${it.link}" target="_blank">Buka link</a>`:''}`;
+          <div class="instructions">${it.instructions||''}</div>
+          ${it.link?`<a href="${it.link}" target="_blank">Buka link</a>`:''}`;
         grid.appendChild(card);
       });
     }
